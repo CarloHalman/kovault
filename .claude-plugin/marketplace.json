@@ -1,0 +1,11 @@
+{
+  "name": "kovault",
+  "owner": { "name": "Carlo" },
+  "plugins": [
+    {
+      "name": "kovault",
+      "source": "./plugin",
+      "description": "Kovault — a knowledge vault backed by Postgres via an MCP server. Adds /setup-kovault /settings-kovault /ingest-kovault /update-kovault /janitor-kovault /export-kovault and SessionStart/Stop hooks. Connect it to your Kovault backend with /setup-kovault."
+    }
+  ]
+}

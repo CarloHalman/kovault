@@ -1,0 +1,9 @@
+{
+  "name": "kovault",
+  "displayName": "Kovault",
+  "version": "1.1.0",
+  "description": "Kovault — a knowledge vault backed by Postgres via an MCP server. Adds /setup-kovault /settings-kovault /ingest-kovault /update-kovault /janitor-kovault /export-kovault and SessionStart/Stop hooks. Point it at your Kovault backend with /setup-kovault.",
+  "author": { "name": "Carlo" },
+  "keywords": ["kovault", "knowledge-vault", "knowledge-base", "mcp", "rag", "postgres"],
+  "license": "Apache-2.0"
+}
