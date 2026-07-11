@@ -21,6 +21,9 @@ This repo is the **plugin**. Install it, point it at your own Kovault backend yo
 `/setup-kovault` connects the plugin to your own backend endpoint (`http://<your-host>:8000/mcp`),
 writes `~/.kovault/config.json`, and scaffolds your local Kovault folder.
 
+> **Install hiccup?** The interactive `/plugin install` can fail right after a fresh `marketplace add`
+> (stale cache). If it does, run the CLI instead: `claude plugin install kovault@kovault`.
+
 ## Commands
 
 - **/setup-kovault** — first-run: point the plugin at the MCP endpoint, set your local config.
