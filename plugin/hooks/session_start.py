@@ -44,6 +44,12 @@ def main() -> None:
         nick = cfg.get("nickname") or cfg.get("username") or "the user"
         lines.append(f"Kovault connected as '{cfg.get('username', '?')}'. Address the user as {nick}.")
         lines.append(f"Update mode: {cfg.get('update_mode', 'manual')}.")
+        if cfg.get("update_mode") == "auto":
+            lines.append(
+                "Kovault auto-harvest ON. Each message: save/update decisions to decisions table, "
+                "agreed/completed work to tasks, durable facts to pages, sources to sources. "
+                "Lookup first (dedupe), fetch before edit, group new pages. End of message: report "
+                "one line per write, format <action> - <title> <table>. Nothing to save: skip.")
         endpoint = cfg.get("endpoint")
         if endpoint and not reachable(endpoint):
             lines.append(f"WARNING: Kovault MCP endpoint {endpoint} is not reachable — check the server.")
