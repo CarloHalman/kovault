@@ -24,6 +24,9 @@ at SessionStart; `AGENTS.md` is the same content for non-Claude runtimes.
 - Never restate a fetched page or chunk in more words than it holds. Quote the needed line or cite
   its id; do not re-describe what the user can already read.
 - Lead with the answer, skip preamble.
+- **Name entities by title, never by bare id.** When you mention a page/task/decision/source/group
+  in chat, refer to it by its title (e.g. "finished the *making-things-better* task"), not its
+  UUID. Ids are for tool calls and links, not for talking to the user.
 
 ## Authoring (so pages embed and link well)
 - **Page shape:** `title`, a `summary`, then chunks (headers), each with a one-line `blurb`
