@@ -8,7 +8,7 @@
 
 Reads ~/.kovault/config.json for `endpoint`, `vault_path`, `username`. The server's read-only
 /export route streams a ready-made zip whose folder tree is already nested
-(pages/<type>/<freshness>/, tasks/<status>/, decisions/<ISO-week>/, sources/<sourcetype>/ with
+(pages/<type>/, tasks/<status>/, decisions/<ISO-week>/, sources/<sourcetype>/ with
 `file` sources split by extension, groups/<grouptype>/), so this client just unzips it. The
 destination is wiped first so the export is a clean mirror of the DB, not an accreting pile.
 """
@@ -30,7 +30,7 @@ TABLES = ("pages", "tasks", "decisions", "sources", "groups")
 
 def load_config() -> dict:
     if not CONFIG.exists():
-        sys.exit(f"no config at {CONFIG}; run /setup-kovault first")
+        sys.exit(f"no config at {CONFIG}; run /kovault:setup first")
     return json.loads(CONFIG.read_text(encoding="utf-8"))
 
 

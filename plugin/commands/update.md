@@ -3,7 +3,7 @@ description: Harvest this session's knowledge into your Kovault — the knowledg
 allowed-tools: Bash, Read
 ---
 
-Harvest step (/update-kovault). Writes are always immediate; this is the deliberate "capture
+Harvest step (/kovault:update). Writes are always immediate; this is the deliberate "capture
 what we learned" moment.
 
 1. Review **this session's** conversation for anything worth keeping: new facts, changed

@@ -4,7 +4,7 @@ argument-hint: "[path | url | -inbox]"
 allowed-tools: Bash, Read, WebFetch
 ---
 
-Ingest content into Kovault (/ingest-kovault). The AI loads the content into context and
+Ingest content into Kovault (/kovault:ingest). The AI loads the content into context and
 structures it; the Kovault MCP server does the embedding, linking and source attribution. Steps:
 
 1. **Get the content** from `$ARGUMENTS`: a file path, a URL (WebFetch it), pasted/attached
@@ -31,7 +31,7 @@ structures it; the Kovault MCP server does the embedding, linking and source att
    each chunk, parses `[text](kind:uuid)` links into the graph, and writes header_sources.
 
 5. **Persist every original into `<vault_path>/sources/`** (the local Kovault folder set in
-   `/setup-kovault`). `sources/` is the single durable home for ingested originals:
+   `/kovault:setup`). `sources/` is the single durable home for ingested originals:
    - **In-context content** — pasted text, an attachment, or a fetched webpage — is written
      into `<vault_path>/sources/` (sensible filename from the title, keep the extension).
    - **Files dropped in `<vault_path>/_inbox/`** are **moved into `<vault_path>/sources/`** after

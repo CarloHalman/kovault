@@ -39,7 +39,7 @@ def main() -> None:
     cfg = load_config()
     lines: list[str] = []
     if not cfg:
-        lines.append("Kovault: no local config found. Run /setup-kovault to connect to your backend.")
+        lines.append("Kovault: no local config found. Run /kovault:setup to connect to your backend.")
     else:
         nick = cfg.get("nickname") or cfg.get("username") or "the user"
         lines.append(f"Kovault connected as '{cfg.get('username', '?')}'. Address the user as {nick}.")

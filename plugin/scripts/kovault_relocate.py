@@ -32,7 +32,7 @@ TEMPLATE_DIRS = [
 
 def load_config() -> dict:
     if not CONFIG.exists():
-        sys.exit(f"no config at {CONFIG}; run /setup-kovault first")
+        sys.exit(f"no config at {CONFIG}; run /kovault:setup first")
     return json.loads(CONFIG.read_text(encoding="utf-8"))
 
 

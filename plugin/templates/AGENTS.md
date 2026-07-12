@@ -20,7 +20,7 @@ at SessionStart; `AGENTS.md` is the same content for non-Claude runtimes.
 
 ## Output efficiency (spend few tokens)
 - Do the Kovault ops, then answer. Do not narrate each `lookup` / `fetch` / write as you go.
-- No long recap after `/ingest-kovault` / `/update-kovault` / `/janitor-kovault`: one line saying what changed + the id.
+- No long recap after `/kovault:ingest` / `/kovault:update` / `/kovault:janitor`: one line saying what changed + the id.
 - Never restate a fetched page or chunk in more words than it holds. Quote the needed line or cite
   its id; do not re-describe what the user can already read.
 - Lead with the answer, skip preamble.
@@ -56,9 +56,9 @@ at SessionStart; `AGENTS.md` is the same content for non-Claude runtimes.
 - each **person name** (responsible / participants / contributors): **≤ 64 chars**.
 
 ## The Kovault folder
-Lives at `vault_path` from `/setup-kovault` (any absolute path: Documents, a project dir, a vault
+Lives at `vault_path` from `/kovault:setup` (any absolute path: Documents, a project dir, a vault
 root, ...). Layout:
-- `_inbox/`: drop files here for `/ingest-kovault`.
+- `_inbox/`: drop files here for `/kovault:ingest`.
 - `sources/`: durable home for **every ingested original**. `_inbox/` files and in-session
   content (pasted text, an attachment, a fetched page) are moved/saved here on ingest, and
   the source `reference` points at the saved file. Files you were merely pointed at on disk
@@ -66,6 +66,6 @@ root, ...). Layout:
 - `CLAUDE.md` / `AGENTS.md`: these rules, loaded at SessionStart.
 
 ## Freshness
-`hot/warm/cold` are recomputed from age by `/janitor-kovault -freshness`. Via `update`, set `static`
+`hot/warm/cold` are recomputed from age by `/kovault:janitor -freshness`. Via `update`, set `static`
 for never-stale reference pages (company/product details) and `archived` when a page is
 superseded. `-freshness` never touches `static` / `archived` / `trashed`.

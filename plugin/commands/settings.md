@@ -10,7 +10,7 @@ Change the user's **local** Kovault config (per-user, on this machine).
    endpoint, vault_path, `debug`). Write the file back.
 3. If `username` or `endpoint` changed, re-register the MCP server:
    `claude mcp remove kovault` then the `claude mcp add … --header "X-Kovault-User: <username>"`
-   from `/setup-kovault`.
+   from `/kovault:setup`.
 4. **Debug mode** (`debug`: true/false, default false): when on, the PostToolUse hook logs every
    Kovault tool call (tool, inputs, result shape, **token cost**, latency, and the user message + your
    text that led to it) into the `debug_log` table, and the raw read-only `sql` tool is unlocked for

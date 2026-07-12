@@ -20,7 +20,7 @@ def main() -> None:
     debug = bool(cfg.get("debug"))
     # gate the raw `sql` tool on debug mode (block it with a message when debug is off)
     if (data.get("tool_name") or "").endswith("__sql") and not debug:
-        print("The Kovault `sql` tool is debug-only. Enable debug in /settings-kovault to use it.", file=sys.stderr)
+        print("The Kovault `sql` tool is debug-only. Enable debug in /kovault:settings to use it.", file=sys.stderr)
         raise SystemExit(2)
     if not debug:
         return

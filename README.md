@@ -15,10 +15,10 @@ This repo is the **plugin**. Install it, point it at your own Kovault backend yo
 ```
 /plugin marketplace add https://github.com/CarloHalman/kovault
 /plugin install kovault@kovault
-/setup-kovault
+/kovault:setup
 ```
 
-`/setup-kovault` connects the plugin to your own backend endpoint (`http://<your-host>:8000/mcp`),
+`/kovault:setup` connects the plugin to your own backend endpoint (`http://<your-host>:8000/mcp`),
 writes `~/.kovault/config.json`, and scaffolds your local Kovault folder.
 
 > **Install hiccup?** The interactive `/plugin install` can fail right after a fresh `marketplace add`
@@ -26,13 +26,13 @@ writes `~/.kovault/config.json`, and scaffolds your local Kovault folder.
 
 ## Commands
 
-- **/setup-kovault** — first-run: point the plugin at the MCP endpoint, set your local config.
-- **/settings-kovault** — change your local config (username / nickname / update mode / debug).
-- **/ingest-kovault** — add pasted text, a webpage, attached files, or anything in `_inbox`.
-- **/update-kovault** — harvest this session's new/changed knowledge into Kovault now.
-- **/janitor-kovault** — maintenance: bare diagnoses; `-lint -freshness -dedupe -embed` do work.
-- **/export-kovault** — download Kovault to a folder as an OKF markdown bundle (no AI).
-- **/help-kovault** — the command list.
+- **/kovault:setup** — first-run: point the plugin at the MCP endpoint, set your local config.
+- **/kovault:settings** — change your local config (username / nickname / update mode / debug).
+- **/kovault:ingest** — add pasted text, a webpage, attached files, or anything in `_inbox`.
+- **/kovault:update** — harvest this session's new/changed knowledge into Kovault now.
+- **/kovault:janitor** — maintenance: bare diagnoses; `-lint -freshness -dedupe -embed` do work.
+- **/kovault:export** — download Kovault to a folder as an OKF markdown bundle (no AI).
+- **/kovault:help** — the command list.
 
 Natural language works too: "update the wiki", "search the vault", "add this to the database"
 all route to the right command.

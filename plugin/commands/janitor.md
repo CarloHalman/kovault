@@ -5,9 +5,9 @@ allowed-tools: Bash
 ---
 
 Run Kovault maintenance via the Kovault `janitor` MCP tool, passing whatever flags are in
-`$ARGUMENTS` as the tool's `flags` list (/janitor-kovault).
+`$ARGUMENTS` as the tool's `flags` list (/kovault:janitor).
 
-- **Bare `/janitor-kovault`** (no flags) → diagnose only: runs the checks, writes a `janitor_reports`
+- **Bare `/kovault:janitor`** (no flags) → diagnose only: runs the checks, writes a `janitor_reports`
   row (report + advice + counts), changes nothing.
 - **`-lint`** → fix structure: renumber header indexes to be contiguous, and prune redundant
   task-dependency edges (drop a direct block that is already implied through an intermediate).
