@@ -2,13 +2,13 @@
 
 AI-first knowledge vault for Claude Code, inspired by Karpathy's LLM-wiki. Knowledge lives in a
 Postgres database. Claude reaches it through an MCP server over a fixed tool set (`lookup`,
-`fetch`, `insert`, …), raw SQL only in debug mode. Search is hybrid semantic + keyword + graph;
+`fetch`, `insert`, …), The model has raw SQL only in debug mode. Search is hybrid semantic + keyword + graph;
 two-part retrieval keeps recall fast and cheap: `lookup` returns a compact ranked index, then
-`fetch` pulls only the page or chunk you need.
+`fetch` pulls the page or chunk you need.
 
-This repo is the **plugin**. Install it, point it at your own Kovault backend you host yourself.
+This is the **plugin**. Install it, point it at your own Kovault backend you host yourself.
 
-> **No backend yet? Install it first:** https://github.com/CarloHalman/kovault-backend
+> **No backend? :** https://github.com/CarloHalman/kovault-backend
 
 ## Install
 
