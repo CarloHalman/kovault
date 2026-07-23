@@ -83,7 +83,7 @@ def _record(data: dict) -> None:
                 pages[pid] = m.group(1)
                 denied.discard(pid)
                 changed = True
-    elif tool.split("__")[-1] in ("write", "insert", "update", "delete", "write_sql"):
+    elif tool.split("__")[-1] in ("write", "insert", "update", "delete"):
         gone = set(_UUID.findall(json.dumps(ti))) & set(pages)
         for pid in gone:                         # a written page must be refetchable
             pages.pop(pid, None)
