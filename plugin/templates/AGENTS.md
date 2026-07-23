@@ -22,7 +22,7 @@ at SessionStart; `AGENTS.md` is the same content for non-Claude runtimes.
 - **Superseding a page:** write the new one, then set the old page's `freshness = archived`.
 - **`group`** related work into projects / topics / areas, loose and flexible (a topic can
   be a server, another a program; a project can span both).
-- **Trash, never delete.** Trash via `write` (`trashed: true`); nothing is hard-deleted. Recover by writing the row live again.
+- **Trash, never delete.** Trash via `write` (`trashed: true`); nothing is hard-deleted. Recover by writing the row live again. (One exception: a `type: edit` block with `trashed: true` hard-deletes that audit-log row — for pruning noisy log entries, not recoverable.)
 - Address the user by the **nickname** in the local config.
 
 ## Writing (the `write` tool)
