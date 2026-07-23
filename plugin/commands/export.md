@@ -12,8 +12,9 @@ context.
 **Run the script — one Bash step.** It reads `~/.kovault/config.json` (`endpoint`, `vault_path`,
 `username`) itself, so it needs no other input.
 ```
-python "${CLAUDE_PLUGIN_ROOT}/scripts/kovault_export.py" $ARGUMENTS
+"$(command -v python3 || command -v python)" "${CLAUDE_PLUGIN_ROOT}/scripts/kovault_export.py" $ARGUMENTS
 ```
+(picks `python3` where it exists — Ubuntu/WSL ships only `python3` — and falls back to `python`.)
 - No args → exports every table to `<vault_path>/export`, Obsidian `[[wikilinks]]` on.
 - `--tables pages,tasks` → subset. `--no-wikilinks` → keep `[text](kind:uuid)` links.
 - `--out <folder>` → a different destination (default is always `<vault_path>/export`).

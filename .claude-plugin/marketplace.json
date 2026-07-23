@@ -5,7 +5,7 @@
     {
       "name": "kovault",
       "source": "./plugin",
-      "description": "Kovault — a knowledge vault backed by Postgres via an MCP server. Adds /kovault:setup /kovault:settings /kovault:ingest /kovault:update /kovault:janitor /kovault:export and SessionStart/Stop hooks. Connect it to your Kovault backend with /kovault:setup."
+      "description": "Kovault — a knowledge vault backed by Postgres via an MCP server. Adds /kovault:setup /kovault:settings /kovault:ingest /kovault:update /kovault:janitor /kovault:export and SessionStart + tool hooks. Connect it to your Kovault backend with /kovault:setup."
     }
   ]
 }

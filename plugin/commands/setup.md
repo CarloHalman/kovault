@@ -14,7 +14,7 @@ service stood up alongside it. `/kovault:setup` only connects the plugin to that
    - **MCP endpoint** — the Kovault backend URL, e.g. `http://kovault-host:8000/mcp`.
    - **Username** — stamped as `edited_by` on every edit (leading identity).
    - **Nickname** — how Kovault addresses the user in-session.
-   - **Update mode** — `auto` (harvest each turn via the Stop hook) or `manual` (only on `/kovault:update`).
+   - **Update mode** — `auto` (harvest each turn, driven by a directive injected at SessionStart) or `manual` (only on `/kovault:update`).
    - **Local Kovault folder** — **ask where they want it** and accept any absolute path. Different
      users keep it in different places: a Documents subfolder, a project directory, a drive
      root, a synced vault, etc. This folder holds `CLAUDE.md`, the `_inbox/` drop folder, and

@@ -8,15 +8,29 @@ at SessionStart; `AGENTS.md` is the same content for non-Claude runtimes.
 - **Search before answering.** Always `lookup` first; never answer from memory. Read the
   returned CHUNKS/PAGES index, then `fetch` what likely holds the answer (a whole page, a
   single chunk, or a task/decision/source). For a big page, ask `lookup` for its outline.
-- **Tools only, never SQL:** `lookup`, `fetch`, `snippet`, `insert`, `update`, `delete`,
-  `link`, `group`. `rows` is the **backup path only**, used when the main tools fall short
-  (every `rows` call is logged so the tools can be improved).
+- **Tools only, never SQL:** `lookup`, `fetch`, `snippet` (read); `write` (create / update / trash
+  every entity — see **Writing** below); `group` + `link` (membership + junction rows). `rows` is
+  the **backup path only**, logged. (`insert` / `update` / `delete` still work this release but are
+  deprecated in favor of `write`.)
+- **Exact lists / counts:** `lookup(filters=[{column, op, value}], count=true)` (precise mode) for
+  deterministic audits and aggregates, instead of `rows` / `sql`.
 - **`fetch` before editing** a page/chunk, so edits build on current content.
 - **Superseding a page:** write the new one, then set the old page's `freshness = archived`.
 - **`group`** related work into projects / topics / areas, loose and flexible (a topic can
   be a server, another a program; a project can span both).
-- **Trash, never delete.** `delete` only trashes; nothing is hard-deleted. Recover with `update`.
+- **Trash, never delete.** Trash via `write` (`trashed: true`); nothing is hard-deleted. Recover by writing the row live again.
 - Address the user by the **nickname** in the local config.
+
+## Writing (the `write` tool)
+- One `write` takes a LIST of `---`-fenced templates — the SAME shape `fetch` returns, so you write
+  what you read: `blocks: ["---\ntype: task\ntitle: …\n---", …]`. Batch = several blocks in the list.
+- `id:` present → UPDATE that row (only the fields you include change; omit a field to leave it, set
+  it empty to clear). `id:` absent → INSERT. An `id:` that matches no live row is an error, not a new row.
+- A chunk is `type: header` with `page_id`, `index`, `title`, `blurb`, then the body AFTER the closing
+  `---`. Chunk ids come from `fetch(outline=true)` — a whole-page fetch doesn't show them.
+- Enum values (a wrong one is rejected with the valid list): status `todo|doing|done`, priority
+  `low|medium|high|urgent`, scope `minutes|hours|days|weeks`, page freshness
+  `hot|warm|cold|static|archived|trashed`, source type `website|file|server|database`, group type `project|topic|area`.
 
 ## Output efficiency (spend few tokens)
 - Do the Kovault ops, then answer. Do not narrate each `lookup` / `fetch` / write as you go.

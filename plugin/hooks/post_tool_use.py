@@ -7,6 +7,7 @@ sees. Matched to `mcp__kovault__.*` in hooks.json. Stdlib only; never blocks the
 The transcript JSONL format is internal to Claude Code and may change between versions, so the
 extraction below is best-effort and degrades to empty context rather than failing the turn."""
 import json
+import re
 import sys
 import tempfile
 import time
@@ -16,6 +17,62 @@ from pathlib import Path
 CONFIG = Path.home() / ".kovault" / "config.json"
 CAP = 4000        # cap the stored user/assistant text so a row stays reasonable
 RESULT_CAP = 50000  # cap the stored raw result (result_tokens keeps the full-length estimate)
+
+_UUID = re.compile(r"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")
+
+
+def _state_path(session_id) -> Path:
+    sid = re.sub(r"[^A-Za-z0-9_-]", "_", str(session_id or "nosession"))
+    return Path(tempfile.gettempdir()) / f"kovault-fetched-{sid}.json"
+
+
+def _load_state(p: Path) -> dict:
+    try:
+        d = json.loads(p.read_text(encoding="utf-8"))
+        return {"pages": dict(d.get("pages") or {}), "denied": list(d.get("denied") or [])}
+    except Exception:
+        return {"pages": {}, "denied": []}
+
+
+def _expire(cutoff_h: int = 12) -> None:
+    try:
+        cutoff = time.time() - cutoff_h * 3600
+        for f in Path(tempfile.gettempdir()).glob("kovault-fetched-*.json"):
+            if f.stat().st_mtime < cutoff:
+                f.unlink()
+    except Exception:
+        pass
+
+
+def _record(data: dict) -> None:
+    """Track whole-page fetches this session for the PreToolUse dedup (F1). Store each fetched page's
+    `updated_at` (from the render's frontmatter) as the freshness baseline; drop a page when a write
+    touches its id so a changed page refetches. The pre-hook re-allows a page whose updated_at moved."""
+    tool = data.get("tool_name") or ""
+    ti = data.get("tool_input") or {}
+    p = _state_path(data.get("session_id"))
+    st = _load_state(p)
+    pages, denied = st["pages"], set(st["denied"])
+    changed = False
+    if tool.endswith("__fetch") and not ti.get("outline"):
+        resp = _resp_str(data.get("tool_response"))
+        for pid in [str(x) for x in (ti.get("pages") or [])]:
+            m = re.search(rf"^id:\s*{re.escape(pid)}\s*$.*?^updated:\s*(\S+)", resp, re.M | re.S)
+            if m:                                # baseline = updated_at at fetch time (skew-free)
+                pages[pid] = m.group(1)
+                denied.discard(pid)
+                changed = True
+    elif tool.split("__")[-1] in ("write", "insert", "update", "delete"):
+        gone = set(_UUID.findall(json.dumps(ti))) & set(pages)
+        for pid in gone:                         # a written page must be refetchable
+            pages.pop(pid, None)
+            changed = True
+    if changed:
+        try:
+            p.write_text(json.dumps({"pages": pages, "denied": sorted(denied)}), encoding="utf-8")
+        except Exception:
+            pass
+    _expire()
 
 
 def _base(endpoint: str) -> str:
@@ -111,9 +168,17 @@ def _extract_context(path: str | None, tuid: str | None) -> tuple[str, str]:
 def main() -> None:
     try:
         data = json.load(sys.stdin)
-        cfg = json.loads(CONFIG.read_text(encoding="utf-8"))
     except Exception:
         return
+    cfg = {}
+    try:
+        cfg = json.loads(CONFIG.read_text(encoding="utf-8"))
+    except Exception:
+        pass
+    try:
+        _record(data)                            # fetch-dedup session state (F1); not debug-gated
+    except Exception:
+        pass                                     # bookkeeping must never break a turn
     if not cfg.get("debug"):
         return
     tool = data.get("tool_name") or ""
