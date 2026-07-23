@@ -12,8 +12,12 @@ at SessionStart; `AGENTS.md` is the same content for non-Claude runtimes.
   every entity — see **Writing** below); `group` + `link` (membership + junction rows). `rows` is
   the **backup path only**, logged. (`insert` / `update` / `delete` still work this release but are
   deprecated in favor of `write`.)
+- **Raw SQL is a debug-only fallback:** `read_sql` (SELECT/WITH) and `write_sql` (INSERT/UPDATE/
+  DELETE/DDL, commits) exist only when `debug` is on and are **logged every call** — reach for them
+  only when the fixed tools genuinely can't express a read or change, so the logs show what's
+  missing. Prefer the real tools.
 - **Exact lists / counts:** `lookup(filters=[{column, op, value}], count=true)` (precise mode) for
-  deterministic audits and aggregates, instead of `rows` / `sql`.
+  deterministic audits and aggregates, instead of `rows` / `read_sql`.
 - **`fetch` before editing** a page/chunk, so edits build on current content.
 - **Superseding a page:** write the new one, then set the old page's `freshness = archived`.
 - **`group`** related work into projects / topics / areas, loose and flexible (a topic can

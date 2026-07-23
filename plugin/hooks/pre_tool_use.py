@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """PreToolUse hook (Kovault). Best-effort, never breaks the turn:
-  1. gate the debug-only `sql` tool when debug is off.
+  1. gate the debug-only raw SQL tools (`read_sql` / `write_sql`) when debug is off.
   2. de-dup whole-page `fetch`es in a session (F1): a page already returned this session is denied
      UNLESS it was edited since (its `updated_at` moved) — an edited page is always re-fetchable.
      A repeat of an already-denied fetch is also allowed (escape hatch for a compacted context).
@@ -89,8 +89,9 @@ def main() -> None:
         cfg = json.loads(CONFIG.read_text(encoding="utf-8"))
     except Exception:
         pass
-    if (data.get("tool_name") or "").endswith("__sql") and not bool(cfg.get("debug")):
-        print("The Kovault `sql` tool is debug-only. Enable debug in /kovault:settings to use it.", file=sys.stderr)
+    if (data.get("tool_name") or "").endswith("_sql") and not bool(cfg.get("debug")):
+        print("The Kovault raw SQL tools (`read_sql` / `write_sql`) are debug-only. "
+              "Enable debug in /kovault:settings to use them.", file=sys.stderr)
         raise SystemExit(2)
     try:
         _dedup(data, cfg.get("endpoint"))        # may raise SystemExit(2) to deny
