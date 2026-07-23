@@ -2,7 +2,7 @@
 
 AI-first knowledge vault for Claude Code, inspired by Karpathy's LLM-wiki. Knowledge lives in a
 Postgres database. Claude reaches it through an MCP server over a fixed tool set (`lookup`,
-`fetch`, `insert`, …), The model has raw SQL only in debug mode. Search is hybrid semantic + keyword + graph;
+`fetch`, `write`, …); the model has raw SQL only in debug mode. Search is hybrid semantic + keyword + graph;
 two-part retrieval keeps recall fast and cheap: `lookup` returns a compact ranked index, then
 `fetch` pulls the page or chunk you need.
 
