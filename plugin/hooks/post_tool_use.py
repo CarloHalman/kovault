@@ -44,6 +44,27 @@ def _expire(cutoff_h: int = 12) -> None:
         pass
 
 
+def _resp_text(resp) -> str:
+    r"""The tool result as plain text with REAL newlines. An MCP result arrives as a JSON STRING like
+    `{"result": "...\n..."}` (newlines escaped) or as content blocks; unwrap it so the frontmatter
+    regex below sees real line breaks (else `^id:`/`^updated:` never match and dedup silently no-ops)."""
+    if isinstance(resp, str):
+        try:
+            resp = json.loads(resp)
+        except Exception:
+            return resp
+    if isinstance(resp, dict):
+        if isinstance(resp.get("result"), str):
+            return resp["result"]
+        c = resp.get("content")
+        if isinstance(c, list):
+            return "\n".join(b.get("text", "") for b in c if isinstance(b, dict) and b.get("text"))
+        return json.dumps(resp)
+    if isinstance(resp, list):
+        return "\n".join(b.get("text", "") for b in resp if isinstance(b, dict) and b.get("text"))
+    return str(resp)
+
+
 def _record(data: dict) -> None:
     """Track whole-page fetches this session for the PreToolUse dedup (F1). Store each fetched page's
     `updated_at` (from the render's frontmatter) as the freshness baseline; drop a page when a write
@@ -55,7 +76,7 @@ def _record(data: dict) -> None:
     pages, denied = st["pages"], set(st["denied"])
     changed = False
     if tool.endswith("__fetch") and not ti.get("outline"):
-        resp = _resp_str(data.get("tool_response"))
+        resp = _resp_text(data.get("tool_response"))
         for pid in [str(x) for x in (ti.get("pages") or [])]:
             m = re.search(rf"^id:\s*{re.escape(pid)}\s*$.*?^updated:\s*(\S+)", resp, re.M | re.S)
             if m:                                # baseline = updated_at at fetch time (skew-free)
