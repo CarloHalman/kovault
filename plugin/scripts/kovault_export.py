@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Export the Kovault DB to an OKF markdown bundle in the local Kovault folder. No AI, no SQL.
 
-  python kovault_export.py                 export everything to <vault_path>/export
+  python kovault_export.py                 export everything to <vault_path>/kovault-export
   python kovault_export.py --tables tasks,decisions
   python kovault_export.py --no-wikilinks  keep [text](kind:uuid) links instead of [[Title]]
   python kovault_export.py --out /some/dir override the destination
@@ -39,10 +39,15 @@ def base_url(endpoint: str) -> str:
     return e[:-4] if e.endswith("/mcp") else e
 
 
-def download_zip(endpoint: str, tables: list[str], wikilinks: bool, user: str | None) -> bytes:
+def download_zip(endpoint: str, tables: list[str], wikilinks: bool, user: str | None,
+                 group: str | None = None, linked_to: str | None = None) -> bytes:
     qs = {"tables": ",".join(tables)}
     if wikilinks:
         qs["wikilinks"] = "1"
+    if group:
+        qs["group"] = group
+    if linked_to:
+        qs["linked_to"] = linked_to
     url = base_url(endpoint) + "/export?" + urllib.parse.urlencode(qs)
     req = urllib.request.Request(url, headers={"X-Kovault-User": user or "script"})
     with urllib.request.urlopen(req, timeout=120) as r:
@@ -50,19 +55,22 @@ def download_zip(endpoint: str, tables: list[str], wikilinks: bool, user: str | 
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Export the Kovault DB to <vault_path>/export (OKF bundle).")
+    ap = argparse.ArgumentParser(description="Export the Kovault DB to <vault_path>/kovault-export (OKF bundle).")
     ap.add_argument("--tables", default=",".join(TABLES), help="comma list; default all")
     ap.add_argument("--no-wikilinks", action="store_true", help="keep markdown links, not [[Title]]")
-    ap.add_argument("--out", default="", help="destination dir (default <vault_path>/export)")
+    ap.add_argument("--group", default="", help="restrict scope to one group's members")
+    ap.add_argument("--linked-to", default="", help="restrict scope to an id + its 1-hop neighbours")
+    ap.add_argument("--out", default="", help="destination dir (default <vault_path>/kovault-export)")
     args = ap.parse_args()
 
     cfg = load_config()
     tables = [t.strip() for t in args.tables.split(",") if t.strip() in TABLES]
     if not tables:
         sys.exit(f"no valid tables; choose from {','.join(TABLES)}")
-    out = Path(args.out).expanduser() if args.out else Path(cfg["vault_path"]).expanduser() / "export"
+    out = Path(args.out).expanduser() if args.out else Path(cfg["vault_path"]).expanduser() / "kovault-export"
 
-    data = download_zip(cfg.get("endpoint", ""), tables, not args.no_wikilinks, cfg.get("username"))
+    data = download_zip(cfg.get("endpoint", ""), tables, not args.no_wikilinks, cfg.get("username"),
+                        args.group or None, args.linked_to or None)
 
     if out.exists():
         shutil.rmtree(out)          # clean mirror: drop files for rows that moved/renamed/left the DB

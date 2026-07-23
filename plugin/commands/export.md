@@ -1,6 +1,6 @@
 ---
 description: Export your Kovault (knowledge vault / wiki / database) to a folder as an OKF markdown bundle (no AI, no context bloat).
-argument-hint: "[all | pages,tasks,decisions,sources,groups] [--no-wikilinks] [--out <folder>]"
+argument-hint: "[all | pages,tasks,decisions,sources,groups] [--group <name>] [--linked-to <id>] [--no-wikilinks] [--out <folder>]"
 allowed-tools: Bash, Read
 ---
 
@@ -15,13 +15,14 @@ context.
 "$(command -v python3 || command -v python)" "${CLAUDE_PLUGIN_ROOT}/scripts/kovault_export.py" $ARGUMENTS
 ```
 (picks `python3` where it exists — Ubuntu/WSL ships only `python3` — and falls back to `python`.)
-- No args → exports every table to `<vault_path>/export`, Obsidian `[[wikilinks]]` on.
+- No args → exports every table to `<vault_path>/kovault-export`, Obsidian `[[wikilinks]]` on.
 - `--tables pages,tasks` → subset. `--no-wikilinks` → keep `[text](kind:uuid)` links.
-- `--out <folder>` → a different destination (default is always `<vault_path>/export`).
+- `--group <name>` → only that group's members. `--linked-to <id>` → an id + its 1-hop neighbours.
+- `--out <folder>` → a different destination (default is always `<vault_path>/kovault-export`).
 
 The destination is wiped and rewritten each run, so it stays a clean mirror of the DB. The tree:
 ```
-pages/<type>/<freshness>/     tasks/<status>/       decisions/<ISO-week>/
+pages/<type>/                 tasks/<status>/       decisions/<ISO-week>/
 sources/<sourcetype>/         (file sources split again by extension: sources/file/<ext>/)
 groups/<grouptype>/           index.md   log.md
 ```
