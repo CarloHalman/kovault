@@ -9,9 +9,10 @@ at SessionStart; `AGENTS.md` is the same content for non-Claude runtimes.
   returned CHUNKS/PAGES index, then `fetch` what likely holds the answer (a whole page, a
   single chunk, or a task/decision/source). For a big page, ask `lookup` for its outline.
 - **Tools only, never SQL:** `lookup`, `fetch`, `snippet` (read); `write` (create / update / trash
-  every entity — see **Writing** below); `group` + `link` (membership + junction rows). `rows` is
-  the **backup path only**, logged. (`insert` / `update` / `delete` still work this release but are
-  deprecated in favor of `write`.)
+  every entity — incl. group members, task blockers, header sources and group archive — see
+  **Writing** below). `rows` is the **backup path only**, logged. `insert` / `update` / `delete` /
+  `group` / `link` are **deprecated and marked for removal** — prefer `write` (`group list` stays a
+  read: use `lookup` over the `groups` table).
 - **Exact lists / counts:** `lookup(filters=[{column, op, value}], count=true)` (precise mode) for
   deterministic audits and aggregates, instead of `rows` / `sql`.
 - **`fetch` before editing** a page/chunk, so edits build on current content.
@@ -28,6 +29,9 @@ at SessionStart; `AGENTS.md` is the same content for non-Claude runtimes.
   it empty to clear). `id:` absent → INSERT. An `id:` that matches no live row is an error, not a new row.
 - A chunk is `type: header` with `page_id`, `index`, `title`, `blurb`, then the body AFTER the closing
   `---`. Chunk ids come from `fetch(outline=true)` — a whole-page fetch doesn't show them.
+- **Junction rosters** reconcile from the block — present = set to that list, empty = clear all,
+  absent = leave: a task's `blockers:`, a group's `members:` (entity ids), a header's `sources:`
+  (source ids). A group's `archived:` sets/clears its archived state (unarchive = clear the line).
 - Enum values (a wrong one is rejected with the valid list): status `todo|doing|done`, priority
   `low|medium|high|urgent`, scope `minutes|hours|days|weeks`, page freshness
   `hot|warm|cold|static|archived|trashed`, source type `website|file|server|database`, group type `project|topic|area`.
